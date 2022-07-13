@@ -2,16 +2,10 @@ export interface ByUser {
   _id: string
   name: string
 }
-export interface AddUserDTO {
-  name: string
+export interface RegisterDTO {
+  username: string
   password: string
   email: string
-  gender: EnumGender
-  phoneNumber: string
-  avatar: string
-  birthday: number
-  idGroup: string
-  role: string
 }
 export interface LoginDTO {
   email: string

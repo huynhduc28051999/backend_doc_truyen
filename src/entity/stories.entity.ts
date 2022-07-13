@@ -4,7 +4,7 @@ import * as moment from 'moment'
 import { Expose, plainToClass } from 'class-transformer'
 
 @Entity('User')
-export class UserEntity {
+export class StoriesEntity {
 	@Expose()
 	@ObjectIdColumn()
 	_id: string
@@ -15,23 +15,35 @@ export class UserEntity {
 
 	@Expose()
 	@Column()
-	password: string
+	tags: string[]
 
 	@Expose()
 	@Column()
-	email: string
+	author: string
 
 	@Expose()
 	@Column()
-	username: string
+	artist: string
 
 	@Expose()
 	@Column()
-	phoneNumber: string
+	status: string
 
 	@Expose()
 	@Column()
 	avatar: string
+
+  @Expose()
+	@Column()
+	overview: string
+
+  @Expose()
+	@Column()
+	note: string
+
+  @Expose()
+	@Column()
+	otherName: string
 
 	@Expose()
 	@Column()
@@ -41,11 +53,11 @@ export class UserEntity {
 	@Column()
 	updatedAt: number
 
-	constructor(args: Partial<UserEntity>) {
+	constructor(args: Partial<StoriesEntity>) {
 		if(args) {
 			Object.assign(
 				this,
-				plainToClass(UserEntity, args, {
+				plainToClass(StoriesEntity, args, {
 					excludeExtraneousValues: true
 				})
 			)

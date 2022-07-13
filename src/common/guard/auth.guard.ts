@@ -2,7 +2,6 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import * as jwt from 'jsonwebtoken'
 import { getMongoRepository } from 'typeorm'
-import { Permission } from 'entity/permission.entity'
 import { ACCESS_TOKEN } from '@utils'
 // import { UserEntity } from '@entity'
 
@@ -29,9 +28,9 @@ export class AuthGuard implements CanActivate {
             if (!user) return false
             // kiểm tra các router nào cần quyền mới kiểm tra
             if (roles) {
-                const permission = await getMongoRepository(Permission).findOne({ _id: user.role })
-                if (!permission) return false
-                if (!roles.some(item => item === permission.code)) return false
+                // const permission = await getMongoRepository(Permission).findOne({ _id: user.role })
+                // if (!permission) return false
+                // if (!roles.some(item => item === permission.code)) return false
             }
             // lưu vào context để sử dụng lần sau
             delete user.password
