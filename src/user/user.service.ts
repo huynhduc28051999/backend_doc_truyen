@@ -26,7 +26,7 @@ export class UserService {
       )
       return { "accessToken": token }
     }
-    return 'Wrong username or password!'
+    throw new HttpException('Wrong username or password!', HttpStatus.UNAUTHORIZED)
   }
   async register(registerDTO: RegisterDTO) {
     try {
@@ -44,7 +44,7 @@ export class UserService {
       const saveUser = await getMongoRepository(UserEntity).save(newUser)
       return !!saveUser
     } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR)
+      throw new HttpException(error.response ?? error, error?.status ?? HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
   async getUserById(_id: string) {

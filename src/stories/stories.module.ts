@@ -10,4 +10,4 @@ import { StoriesController } from './stories.controller'
     providers: [StoriesService],
     exports: [StoriesService]
 })
-export class UserModule { }
+export class StoriesModule { }

@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, UseGuards, Query } from '@nestjs/common'
 import { UserService } from './user.service'
-import { ChangePasswordDTO, RegisterDTO } from '@utils'
+import { ChangePasswordDTO, LoginDTO, RegisterDTO } from '@utils'
 import { AuthGuard, User, Reponse } from '@common'
 
-@Controller('user')
+@Controller('auth')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
@@ -23,6 +23,12 @@ export class UserController {
   @Post('register')
   async register(@Body() registerData: RegisterDTO) {
     const data = await this.userService.register(registerData)
+    return Reponse(data)
+  }
+
+  @Post('login')
+  async login(@Body() loginDTO: LoginDTO) {
+    const data = await this.userService.login(loginDTO)
     return Reponse(data)
   }
 
