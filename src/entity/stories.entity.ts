@@ -51,6 +51,10 @@ export class StoriesEntity {
 
 	@Expose()
 	@Column()
+	createBy: string
+
+	@Expose()
+	@Column()
 	updatedAt: number
 
 	constructor(args: Partial<StoriesEntity>) {

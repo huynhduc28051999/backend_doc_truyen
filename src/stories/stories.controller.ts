@@ -1,35 +1,29 @@
 import { Controller, Get, Post, Body, UseGuards, Query } from '@nestjs/common'
 import { StoriesService } from './stories.service'
-import { ChangePasswordDTO, RegisterDTO } from '@utils'
+import { ChangePasswordDTO } from '@utils'
 import { AuthGuard, User, Reponse } from '@common'
 
-@Controller('user')
+@Controller('story')
 export class StoriesController {
   constructor(private readonly storiesService: StoriesService) { }
 
-  // @UseGuards(AuthGuard)
-  // @Get('profile')
-  // async profile(@User() user) {
-  //   const data = await this.userService.getUserById(user._id)
-  //   return Reponse(data)
-  // }
+  @Get()
+  async getStoryById(@Query('id') id) {
+    const data = await this.storiesService.getStoryById(id)
+    return Reponse(data)
+  }
 
-  // @Get()
-  // async userById(@Query('id') idUser) {
-  //   const data = await this.userService.getUserById(idUser)
-  //   return Reponse(data)
-  // }
+  @UseGuards(AuthGuard)
+  @Post('byMe')
+  async getAllOwnStory(@User() user) {
+    const data = await this.storiesService.getOwnStories(user._id)
+    return Reponse(data)
+  }
 
-  // @Post('register')
-  // async register(@Body() registerData: RegisterDTO) {
-  //   const data = await this.userService.register(registerData)
-  //   return Reponse(data)
-  // }
-
-  // @UseGuards(AuthGuard)
-  // @Post('change-password')
-  // async changePassword(@User() user, @Body() input: ChangePasswordDTO) {
-  //   const data = await this.userService.changePassword(user._id, input)
-  //   return Reponse(data)
-  // }
+  @UseGuards(AuthGuard)
+  @Post()
+  async createStory(@User() user, @Body() input: ChangePasswordDTO) {
+    const data = await this.storiesService.createStory(user._id, input)
+    return Reponse(data)
+  }
 }

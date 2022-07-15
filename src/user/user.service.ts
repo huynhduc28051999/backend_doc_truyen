@@ -4,6 +4,7 @@ import { getMongoRepository } from "typeorm"
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common"
 import { ACCESS_TOKEN, RegisterDTO, LoginDTO, ChangePasswordDTO } from '@utils'
 import { UserEntity} from '@entity'
+import { AppError } from 'common/error/AppError'
 
 @Injectable()
 export class UserService {
@@ -44,7 +45,7 @@ export class UserService {
       const saveUser = await getMongoRepository(UserEntity).save(newUser)
       return !!saveUser
     } catch (error) {
-      throw new HttpException(error.response ?? error, error?.status ?? HttpStatus.INTERNAL_SERVER_ERROR)
+      throw new HttpException(...AppError(error))
     }
   }
   async getUserById(_id: string) {
@@ -56,9 +57,7 @@ export class UserService {
       delete user.password
       return user
     } catch (error) {
-      console.log(error);
-      
-      throw new HttpException(error.response ?? error, error?.status ?? HttpStatus.INTERNAL_SERVER_ERROR)
+      throw new HttpException(...AppError(error))
     }
   }
   async changePassword(_id: string, input: ChangePasswordDTO) {
@@ -71,7 +70,7 @@ export class UserService {
       const saveUser = await getMongoRepository(UserEntity).save(user)
       return !!saveUser
     } catch (error) {
-      throw new HttpException(error.response ?? error, error?.status ?? HttpStatus.INTERNAL_SERVER_ERROR)
+      throw new HttpException(...AppError(error))
     }
   }
 }

@@ -1,39 +1,39 @@
 import { getMongoRepository } from "typeorm"
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common"
-import { RegisterDTO,  } from '@utils'
 import { StoriesEntity } from '@entity'
+import { AppError } from "common/error/AppError"
 
 @Injectable()
 export class StoriesService {
 
-  async register(registerDTO: RegisterDTO) {
+  async getOwnStories(userId: string) {
     try {
-      const { email } = registerDTO
-      const storyExits = await getMongoRepository(StoriesEntity).findOne({
-        where: {
-          $or: [ { email }, { username: email } ]
-        }
+      const stories = await getMongoRepository(StoriesEntity).find({
+        createBy: userId
       })
-      if (storyExits) throw new HttpException('story exist', HttpStatus.CONFLICT)
-      // const newUser = new StoriesEntity({
-      //   ...registerDTO,
-		  //   password: await bcrypt.hash(registerDTO.password, 10)
-      // })
-      // const saveUser = await getMongoRepository(StoriesEntity).save(newUser)
-      // return !!saveUser
+      return stories
     } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR)
+      throw new HttpException(...AppError(error))
     }
   }
-  async getUserById(_id: string) {
+  async createStory(userId: string, input: any) {
+    try {
+      const newStory = new StoriesEntity({...input, createBy: userId });
+      const story = await getMongoRepository(StoriesEntity).save(newStory)
+      return story
+    } catch (error) {
+      throw new HttpException(...AppError(error))
+    }
+  }
+  async getStoryById(_id: string) {
     try {
       const story = await getMongoRepository(StoriesEntity).findOne({ _id })
       if (!story) {
-        throw new HttpException('User does not exist', HttpStatus.NOT_FOUND)
+        throw new HttpException('Story does not exist', HttpStatus.NOT_FOUND)
       }
       return story
     } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR)
+      throw new HttpException(...AppError(error))
     }
   }
 }
