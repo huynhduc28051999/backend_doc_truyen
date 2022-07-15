@@ -3,6 +3,7 @@ import { Reflector } from '@nestjs/core'
 import * as jwt from 'jsonwebtoken'
 import { getMongoRepository } from 'typeorm'
 import { ACCESS_TOKEN } from '@utils'
+import { UserEntity } from '@entity'
 // import { UserEntity } from '@entity'
 
 @Injectable()
@@ -23,8 +24,7 @@ export class AuthGuard implements CanActivate {
             const decoded: any = jwt.verify(token, ACCESS_TOKEN)
             const { userId } = decoded
             if (!userId) return false
-            const user: any = {};
-            // const user = await getMongoRepository(UserEntity).findOne({ _id: userId, isActive: true, isLocked: false })
+            const user = await getMongoRepository(UserEntity).findOne({ _id: userId})
             if (!user) return false
             // kiểm tra các router nào cần quyền mới kiểm tra
             if (roles) {

@@ -56,7 +56,9 @@ export class UserService {
       delete user.password
       return user
     } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR)
+      console.log(error);
+      
+      throw new HttpException(error.response ?? error, error?.status ?? HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
   async changePassword(_id: string, input: ChangePasswordDTO) {
@@ -69,7 +71,7 @@ export class UserService {
       const saveUser = await getMongoRepository(UserEntity).save(user)
       return !!saveUser
     } catch (error) {
-      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR)
+      throw new HttpException(error.response ?? error, error?.status ?? HttpStatus.INTERNAL_SERVER_ERROR)
     }
   }
 }
