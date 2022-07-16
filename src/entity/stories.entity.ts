@@ -11,11 +11,11 @@ export class StoriesEntity {
 
 	@Expose()
 	@Column()
-	name: string
+	title: string
 
 	@Expose()
 	@Column()
-	tags: string[]
+	altname: string[]
 
 	@Expose()
 	@Column()
@@ -23,11 +23,19 @@ export class StoriesEntity {
 
 	@Expose()
 	@Column()
-	artist: string
+	illustrator: string
 
 	@Expose()
 	@Column()
-	status: string
+	type: number
+
+	@Expose()
+	@Column()
+	genders: string[]
+
+	@Expose()
+	@Column()
+	status: number
 
 	@Expose()
 	@Column()
@@ -35,15 +43,11 @@ export class StoriesEntity {
 
   @Expose()
 	@Column()
-	overview: string
+	summary: string
 
   @Expose()
 	@Column()
-	note: string
-
-  @Expose()
-	@Column()
-	otherName: string
+	extra: string
 
 	@Expose()
 	@Column()
