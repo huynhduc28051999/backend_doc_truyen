@@ -3,8 +3,8 @@ import * as uuid from 'uuid'
 import * as moment from 'moment'
 import { Expose, plainToClass } from 'class-transformer'
 
-@Entity('Story')
-export class StoriesEntity {
+@Entity('Chaper')
+export class ChapperEntity {
 	@Expose()
 	@ObjectIdColumn()
 	_id: string
@@ -15,39 +15,11 @@ export class StoriesEntity {
 
 	@Expose()
 	@Column()
-	altname: string[]
-
-	@Expose()
-	@Column()
-	author: string
-
-	@Expose()
-	@Column()
-	illustrator: string
-
-	@Expose()
-	@Column()
-	type: number
-
-	@Expose()
-	@Column()
-	genders: string[]
-
-	@Expose()
-	@Column()
-	status: number
-
-	@Expose()
-	@Column()
-	avatar: string
+	content: string
 
   @Expose()
 	@Column()
-	summary: string
-
-  @Expose()
-	@Column()
-	extra: string
+	storyId: string
 
 	@Expose()
 	@Column()
@@ -61,11 +33,11 @@ export class StoriesEntity {
 	@Column()
 	updatedAt: number
 
-	constructor(args: Partial<StoriesEntity>) {
+	constructor(args: Partial<ChapperEntity>) {
 		if(args) {
 			Object.assign(
 				this,
-				plainToClass(StoriesEntity, args, {
+				plainToClass(ChapperEntity, args, {
 					excludeExtraneousValues: true
 				})
 			)
