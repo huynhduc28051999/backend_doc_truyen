@@ -25,4 +25,10 @@ export class StoriesController {
     const data = await this.storiesService.createStory(user._id, input)
     return Reponse(data)
   }
+
+  @Get('all')
+  async getAllStories() {
+    const data = await this.storiesService.getAllStory()
+    return Reponse(data)
+  }
 }

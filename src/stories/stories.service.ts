@@ -36,4 +36,12 @@ export class StoriesService {
       throw new HttpException(...AppError(error))
     }
   }
+  async getAllStory() {
+    try {
+      const stories = await getMongoRepository(StoriesEntity).find({ })
+      return stories
+    } catch (error) {
+      throw new HttpException(...AppError(error))
+    }
+  }
 }
