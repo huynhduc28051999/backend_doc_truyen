@@ -2,6 +2,7 @@ import { getMongoRepository } from "typeorm"
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common"
 import { ChapperEntity, StoriesEntity } from '@entity'
 import { AppError } from 'common/error/AppError'
+import moment from "moment"
 
 @Injectable()
 export class ChapperService {
@@ -22,6 +23,8 @@ export class ChapperService {
       if (!story) {
         throw new HttpException('Story does not exist', HttpStatus.NOT_FOUND)
       }
+      story.updatedAt = moment().valueOf();
+      await getMongoRepository(ChapperEntity).save(story)
       const newChapper = new ChapperEntity({...input, createBy: userId });
       const chapper = await getMongoRepository(ChapperEntity).save(newChapper)
       return chapper

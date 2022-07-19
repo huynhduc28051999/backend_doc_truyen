@@ -31,4 +31,10 @@ export class StoriesController {
     const data = await this.storiesService.getAllStory()
     return Reponse(data)
   }
+
+  @Get('search')
+  async paginationStories(@Query() query) {
+    const data = await this.storiesService.paginationStories(query)
+    return Reponse(data)
+  }
 }
