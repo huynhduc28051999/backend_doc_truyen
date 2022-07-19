@@ -51,6 +51,10 @@ export class StoriesEntity {
 
 	@Expose()
 	@Column()
+	viewCount: number
+
+	@Expose()
+	@Column()
 	createdAt: number
 
 	@Expose()
@@ -72,6 +76,7 @@ export class StoriesEntity {
 			this._id = uuid.v4()
 			this.createdAt = this.createdAt || moment().valueOf()
 			this.updatedAt = moment().valueOf()
+			this.viewCount = 0;
 		}
 	}
 }

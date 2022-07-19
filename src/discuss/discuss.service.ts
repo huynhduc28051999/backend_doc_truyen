@@ -35,7 +35,7 @@ export class DiscussService {
         query.category = Number(filter.category)
       }
 
-      const disscuss = await getMongoRepository(DiscussEntity).aggregate([
+      const aggregate: any = [
         { $match: query },
         {
           $lookup: {
@@ -61,7 +61,12 @@ export class DiscussService {
         {
           $sort: { createdAt: -1 }
         }
-      ]).toArray()
+      ]
+      if (filter.perPage) {
+        aggregate.concat({ $skip: Number(filter.perPage) })
+      }
+
+      const disscuss = await getMongoRepository(DiscussEntity).aggregate(aggregate).toArray()
       return disscuss;
     } catch (error) {
       throw new HttpException(...AppError(error))

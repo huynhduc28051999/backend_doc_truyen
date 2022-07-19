@@ -46,8 +46,9 @@ export class StoriesService {
   }
   async paginationStories(filter: any) {
     try {
+      filter.page = Number(filter.page || '1');
       const { search, type, status, genders, sort, page = 1, perPage } = filter;
-      const take = perPage || 20
+      const take = Number(perPage) || 20
       const skip = (page - 1) * take;
       let order = {};
       const query: any = {
@@ -61,7 +62,7 @@ export class StoriesService {
         query.genders = { $in: [Number(genders)] } 
       }
 
-      if (sort !== 'updatedAt' && sort !== 'createdAt') {
+      if (sort !== 'updatedAt' && sort !== 'createdAt' && sort !== 'viewCount') {
         order = { title: sort }
       } else {
         order = { [sort]: 'DESC' }
@@ -89,6 +90,20 @@ export class StoriesService {
           hasNextPage: total - take * (page - 1) > 0
         }
       }
+    } catch (error) {
+      throw new HttpException(...AppError(error))
+    }
+  }
+  async viewStory(_id: string) {
+    try {
+      const story = await getMongoRepository(StoriesEntity).findOne({ _id })
+      if (!story) {
+        throw new HttpException('Story does not exist', HttpStatus.NOT_FOUND)
+      }
+
+      story.viewCount ++;
+      const saveStory = await getMongoRepository(StoriesEntity).save(story)
+      return saveStory
     } catch (error) {
       throw new HttpException(...AppError(error))
     }

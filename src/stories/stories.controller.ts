@@ -37,4 +37,10 @@ export class StoriesController {
     const data = await this.storiesService.paginationStories(query)
     return Reponse(data)
   }
+
+  @Get('viewStory')
+  async viewStory(@Query('id') id) {
+    const data = await this.storiesService.viewStory(id)
+    return Reponse(data)
+  }
 }
