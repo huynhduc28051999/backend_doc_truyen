@@ -13,8 +13,8 @@ export class DiscussController {
   }
 
   @Get('all')
-  async getAllDiscuss() {
-    const data = await this.discussService.getAllDiscuss()
+  async getAllDiscuss(@Query() query) {
+    const data = await this.discussService.getAllDiscuss(query)
     return Reponse(data)
   }
 

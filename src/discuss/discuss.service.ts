@@ -26,9 +26,42 @@ export class DiscussService {
     }
   }
 
-  async getAllDiscuss() {
+  async getAllDiscuss(filter: any) {
     try {
-      const disscuss = await getMongoRepository(DiscussEntity).find({})
+      const query: any = {}
+      if (filter.category === 'all' || !filter.category) {
+        query.category = { $in: [1,2,3,4,5]}
+      } else {
+        query.category = Number(filter.category)
+      }
+
+      const disscuss = await getMongoRepository(DiscussEntity).aggregate([
+        { $match: query },
+        {
+          $lookup: {
+            from: 'User',
+            localField: 'createBy',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $unwind: "$user"
+        },
+        {
+          $project: {
+            "_id": 1,
+            "title": 1,
+            "category": 1,
+            "createdAt": 1,
+            "user._id": 1,
+            "user.username": 1,
+          }
+        },
+        {
+          $sort: { createdAt: -1 }
+        }
+      ]).toArray()
       return disscuss;
     } catch (error) {
       throw new HttpException(...AppError(error))
