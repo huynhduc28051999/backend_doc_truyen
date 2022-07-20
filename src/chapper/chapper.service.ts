@@ -10,11 +10,19 @@ export class ChapperService {
   constructor(private readonly storiesService: StoriesService) { }
   async getChapperById(_id: string) {
     try {
-      const chapper = await getMongoRepository(ChapperEntity).findOne({ _id })
+      const chapper: any = await getMongoRepository(ChapperEntity).findOne({ _id })
       if (!chapper) {
         throw new HttpException('Chapper does not exist', HttpStatus.NOT_FOUND)
       }
       await this.storiesService.viewStory(chapper.storyId);
+      const [next, pre] = await Promise.all([
+        await getMongoRepository(ChapperEntity).findOne({ where: { createdAt: { $gt: chapper.createdAt } } }),
+        await getMongoRepository(ChapperEntity).findOne({ where: { createdAt: { $lt: chapper.createdAt } } })
+      ])
+      const story = await getMongoRepository(StoriesEntity).findOne({ _id: chapper.storyId })
+      chapper.story = story;
+      chapper.nextChap = next?._id;
+      chapper.preChap = pre?._id;
       return chapper
     } catch (error) {
       throw new HttpException(...AppError(error))
