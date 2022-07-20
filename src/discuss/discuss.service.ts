@@ -82,4 +82,13 @@ export class DiscussService {
       throw new HttpException(...AppError(error))
     }
   }
+
+  async getDiscussByStory(storyId: string) {
+    try {
+      const disscuss = await getMongoRepository(DiscussEntity).find({ seriesId: storyId })
+      return disscuss;
+    } catch (error) {
+      throw new HttpException(...AppError(error))
+    }
+  }
 }

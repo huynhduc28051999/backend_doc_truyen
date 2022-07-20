@@ -108,4 +108,76 @@ export class StoriesService {
       throw new HttpException(...AppError(error))
     }
   }
+
+  async detailStory(_id: string) {
+    try {
+      const [story]: any[] = await getMongoRepository(StoriesEntity).aggregate([
+        { $match: { _id } },
+        {
+          $lookup: {
+            from: 'User',
+            localField: 'createBy',
+            foreignField: '_id',
+            as: 'user'
+          }
+        },
+        {
+          $unwind: "$user"
+        },
+        {
+          $project: {
+            "_id": 1,
+            "title": 1,
+            "altname": 1,
+            "author": 1,
+            "illustrator": 1,
+            "type": 1,
+            "avatar": 1,
+            "genders": 1,
+            "summary": 1,
+            "extra": 1,
+            "status": 1,
+            "category": 1,
+            "viewCount": 1,
+            "createdAt": 1,
+            "updatedAt": 1,
+            "user._id": 1,
+            "user.username": 1,
+          }
+        },
+        {
+          $sort: { createdAt: -1 }
+        }
+      ]).toArray()
+      if (!story) {
+        throw new HttpException('Story does not exist', HttpStatus.NOT_FOUND)
+      }
+      const chappers = await getMongoRepository(ChapperEntity).find({ storyId: _id })
+      story.chappers = chappers;
+
+      return story;
+    } catch (error) {
+      throw new HttpException(...AppError(error))
+    }
+  }
+
+  async otherStoriesByAuthor(_id: string) {
+    try {
+      const story = await getMongoRepository(StoriesEntity).findOne({ _id })
+      if (!story) {
+        throw new HttpException('Story does not exist', HttpStatus.NOT_FOUND)
+      }
+      const otherStories = await getMongoRepository(StoriesEntity).find({
+        where: {
+          group: story.group,
+          _id: { $ne: _id }
+        }
+      })
+
+      return otherStories
+    } catch (error) {
+      throw new HttpException(...AppError(error))
+    }
+  }
+
 }

@@ -3,59 +3,27 @@ import * as uuid from 'uuid'
 import * as moment from 'moment'
 import { Expose, plainToClass } from 'class-transformer'
 
-@Entity('Story')
-export class StoriesEntity {
+@Entity('Comment')
+export class ComemntEntity {
 	@Expose()
 	@ObjectIdColumn()
 	_id: string
 
 	@Expose()
 	@Column()
-	title: string
-
-	@Expose()
-	@Column()
-	altname: string[]
-
-	@Expose()
-	@Column()
-	author: string
-
-	@Expose()
-	@Column()
-	illustrator: string
-
-	@Expose()
-	@Column()
-	type: number
-
-	@Expose()
-	@Column()
-	genders: string[]
-
-	@Expose()
-	@Column()
-	status: number
-
-	@Expose()
-	@Column()
-	avatar: string
+	content: string
 
   @Expose()
 	@Column()
-	summary: string
-
-  @Expose()
-	@Column()
-	extra: string
+	storyId: string
 
 	@Expose()
 	@Column()
-	viewCount: number
+	discussId: string
 
 	@Expose()
 	@Column()
-	group: string
+	chapperId: string
 
 	@Expose()
 	@Column()
@@ -63,25 +31,23 @@ export class StoriesEntity {
 
 	@Expose()
 	@Column()
-	createBy: string
+	createBy: any
 
 	@Expose()
 	@Column()
 	updatedAt: number
 
-	constructor(args: Partial<StoriesEntity>) {
+	constructor(args: Partial<ComemntEntity>) {
 		if(args) {
 			Object.assign(
 				this,
-				plainToClass(StoriesEntity, args, {
+				plainToClass(ComemntEntity, args, {
 					excludeExtraneousValues: true
 				})
 			)
 			this._id = uuid.v4()
 			this.createdAt = this.createdAt || moment().valueOf()
-			this.group = this.group || 'Web truyện'
 			this.updatedAt = moment().valueOf()
-			this.viewCount = 0;
 		}
 	}
 }

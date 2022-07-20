@@ -3,15 +3,18 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common"
 import { ChapperEntity, StoriesEntity } from '@entity'
 import { AppError } from 'common/error/AppError'
 import moment from "moment"
+import { StoriesService } from "stories/stories.service"
 
 @Injectable()
 export class ChapperService {
+  constructor(private readonly storiesService: StoriesService) { }
   async getChapperById(_id: string) {
     try {
       const chapper = await getMongoRepository(ChapperEntity).findOne({ _id })
       if (!chapper) {
         throw new HttpException('Chapper does not exist', HttpStatus.NOT_FOUND)
       }
+      await this.storiesService.viewStory(chapper.storyId);
       return chapper
     } catch (error) {
       throw new HttpException(...AppError(error))

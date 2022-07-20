@@ -43,4 +43,16 @@ export class StoriesController {
     const data = await this.storiesService.viewStory(id)
     return Reponse(data)
   }
+
+  @Get('detailStory')
+  async detailStory(@Query('id') id) {
+    const data = await this.storiesService.detailStory(id)
+    return Reponse(data)
+  }
+
+  @Get('otherStoriesByAuthor')
+  async otherStoriesByAuthor(@Query('id') id) {
+    const data = await this.storiesService.otherStoriesByAuthor(id)
+    return Reponse(data)
+  }
 }

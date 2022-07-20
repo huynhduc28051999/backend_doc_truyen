@@ -31,4 +31,10 @@ export class DiscussController {
     const data = await this.discussService.createDiscuss(user._id, input)
     return Reponse(data)
   }
+
+  @Get('byStory')
+  async getDiscussByStory(@Query('storyId') storyId) {
+    const data = await this.discussService.getDiscussByStory(storyId)
+    return Reponse(data)
+  }
 }

@@ -7,11 +7,6 @@ async function bootstrap() {
   app.use(bodyParser.json({limit: '50mb'}));
   app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
   app.enableCors()
-  // app.enableCors({
-  //   origin: 'http://event-mangement-pro.surge.sh',
-  //   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-  //   credentials: true,
-  // })
   await app.listen(process.env.PORT || 4000);
 }
 bootstrap();
