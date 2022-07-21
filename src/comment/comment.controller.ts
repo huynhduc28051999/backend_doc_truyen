@@ -24,4 +24,10 @@ export class CommentController {
     const data = await this.commentService.getComments(id, by)
     return Reponse(data)
   }
+
+  @Get('recently')
+  async commentRecent() {
+    const data = await this.commentService.getRecentlyComments()
+    return Reponse(data)
+  }
 }
