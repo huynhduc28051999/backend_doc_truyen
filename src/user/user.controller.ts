@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, UseGuards, Query } from '@nestjs/common'
 import { UserService } from './user.service'
-import { ChangePasswordDTO, LoginDTO, RegisterDTO } from '@utils'
+import {ChangePasswordDTO, LoginDTO, LoginWithGoogleDTO, RegisterDTO} from '@utils'
 import { AuthGuard, User, Reponse } from '@common'
 
 @Controller('auth')
@@ -30,6 +30,12 @@ export class UserController {
   async login(@Body() loginDTO: LoginDTO) {
     const data = await this.userService.login(loginDTO)
     return Reponse(data)
+  }
+
+  @Post('login/google')
+  async loginWithGoogle(@Body() loginWithGoogleDTO: LoginWithGoogleDTO) {
+    const data = await this.userService.loginWithGoogle(loginWithGoogleDTO);
+    return Reponse(data);
   }
 
   @UseGuards(AuthGuard)

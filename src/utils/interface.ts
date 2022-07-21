@@ -11,6 +11,10 @@ export interface LoginDTO {
   email: string
   password: string
 }
+export interface LoginWithGoogleDTO {
+  googleToken: string
+}
+
 export interface UpdateUserDTO {
   name: string
   password: string

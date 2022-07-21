@@ -2,9 +2,10 @@ import * as jwt from 'jsonwebtoken'
 import * as bcrypt from 'bcrypt'
 import { getMongoRepository } from "typeorm"
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common"
-import { ACCESS_TOKEN, RegisterDTO, LoginDTO, ChangePasswordDTO } from '@utils'
+import {ACCESS_TOKEN, RegisterDTO, LoginDTO, ChangePasswordDTO, LoginWithGoogleDTO} from '@utils'
 import { UserEntity} from '@entity'
 import { AppError } from 'common/error/AppError'
+import axios from 'axios';
 
 @Injectable()
 export class UserService {
@@ -28,6 +29,63 @@ export class UserService {
       return { "accessToken": token }
     }
     throw new HttpException('Wrong username or password!', HttpStatus.UNAUTHORIZED)
+  }
+
+  async loginWithGoogle(loginWithGoogleDTO: LoginWithGoogleDTO) {
+    try {
+      const { googleToken } = loginWithGoogleDTO;
+      const { data: googleResponse } = await axios.get(
+        'https://oauth2.googleapis.com/tokeninfo',
+        {
+          params: {
+            id_token: googleToken,
+          },
+        },
+      );
+
+      if (!googleResponse?.email) {
+        throw new HttpException(
+          'Google authentication has error',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+
+      const { email,name,picture } = googleResponse;
+      const userExist = await getMongoRepository(UserEntity).findOne({
+        where: {
+          email,
+        },
+      });
+
+      let userId = userExist?._id;
+
+      // save if new user
+      if (!userExist) {
+        const newUser = new UserEntity({
+          username: email,
+          email,
+          avatar:picture,
+          name
+        });
+        const saveUser = await getMongoRepository(UserEntity).save(newUser);
+
+        if (!!saveUser) {
+          userId = saveUser._id;
+        }
+      }
+
+      if (!userId) {
+        throw new HttpException(
+          'Google authentication has error',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+
+      const token = jwt.sign({ userId }, ACCESS_TOKEN, { expiresIn: '30d' });
+      return { accessToken: token };
+    } catch (error) {
+      throw new HttpException(...AppError(error));
+    }
   }
   async register(registerDTO: RegisterDTO) {
     try {
