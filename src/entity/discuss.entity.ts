@@ -27,6 +27,10 @@ export class DiscussEntity {
 
 	@Expose()
 	@Column()
+	viewCount: number
+
+	@Expose()
+	@Column()
 	createdAt: number
 
 	@Expose()
@@ -47,6 +51,7 @@ export class DiscussEntity {
 			)
 			this._id = uuid.v4()
 			this.createdAt = this.createdAt || moment().valueOf()
+			this.viewCount = 0;
 			this.updatedAt = moment().valueOf()
 		}
 	}

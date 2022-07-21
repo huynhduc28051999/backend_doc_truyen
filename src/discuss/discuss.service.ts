@@ -1,17 +1,21 @@
 import { getMongoRepository } from "typeorm"
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common"
-import { DiscussEntity } from '@entity'
+import { DiscussEntity, UserEntity } from '@entity'
 import { AppError } from 'common/error/AppError'
 
 @Injectable()
 export class DiscussService {
   async getDiscussById(_id: string) {
     try {
-      const disscuss = await getMongoRepository(DiscussEntity).find({ _id })
+      const disscuss = await getMongoRepository(DiscussEntity).findOne({ _id })
       if (!disscuss) {
         throw new HttpException('Disscuss does not exist', HttpStatus.NOT_FOUND)
       }
-      return disscuss;
+      disscuss.viewCount ++;
+      const saveDiscuss: any = await getMongoRepository(DiscussEntity).save(disscuss);
+      const user = await getMongoRepository(UserEntity).findOne({ _id: saveDiscuss.createBy });
+      saveDiscuss.user = user;
+      return saveDiscuss;
     } catch (error) {
       throw new HttpException(...AppError(error))
     }
