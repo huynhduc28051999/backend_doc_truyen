@@ -11,7 +11,6 @@ export class ChapperService {
   async getChapperById(_id: string) {
     try {
       const chapper: any = await getMongoRepository(ChapperEntity).findOne({ _id })
-      console.log(chapper);
       
       if (!chapper) {
         throw new HttpException('Chapper does not exist', HttpStatus.NOT_FOUND)
@@ -42,8 +41,6 @@ export class ChapperService {
       const chapper = await getMongoRepository(ChapperEntity).save(newChapper)
       return chapper
     } catch (error) {
-      console.log(error);
-      
       throw new HttpException(...AppError(error))
     }
   }
