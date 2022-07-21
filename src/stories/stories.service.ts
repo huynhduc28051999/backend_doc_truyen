@@ -143,6 +143,7 @@ export class StoriesService {
             "updatedAt": 1,
             "user._id": 1,
             "user.username": 1,
+            "user.name": 1,
           }
         },
         {

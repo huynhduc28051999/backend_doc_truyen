@@ -2,7 +2,7 @@ import { getMongoRepository } from "typeorm"
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common"
 import { ChapperEntity, StoriesEntity } from '@entity'
 import { AppError } from 'common/error/AppError'
-import moment from "moment"
+import * as moment from 'moment'
 import { StoriesService } from "stories/stories.service"
 
 @Injectable()
@@ -40,6 +40,8 @@ export class ChapperService {
       const chapper = await getMongoRepository(ChapperEntity).save(newChapper)
       return chapper
     } catch (error) {
+      console.log(error);
+      
       throw new HttpException(...AppError(error))
     }
   }
