@@ -59,6 +59,10 @@ export class StoriesEntity {
 
 	@Expose()
 	@Column()
+	isActive: boolean
+
+	@Expose()
+	@Column()
 	createdAt: number
 
 	@Expose()
@@ -81,6 +85,7 @@ export class StoriesEntity {
 			this.createdAt = this.createdAt || moment().valueOf()
 			this.group = this.group || 'Web truyện'
 			this.updatedAt = moment().valueOf()
+			this.isActive = true;
 			this.viewCount = 0;
 		}
 	}

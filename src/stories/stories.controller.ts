@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Query } from '@nestjs/common'
+import { Controller, Get, Post, Body, UseGuards, Query, Delete } from '@nestjs/common'
 import { StoriesService } from './stories.service'
 import { AuthGuard, User, Reponse } from '@common'
 
@@ -53,6 +53,12 @@ export class StoriesController {
   @Get('otherStoriesByAuthor')
   async otherStoriesByAuthor(@Query('id') id) {
     const data = await this.storiesService.otherStoriesByAuthor(id)
+    return Reponse(data)
+  }
+
+  @Delete()
+  async deleteStory(@Query('id') id) {
+    const data = await this.storiesService.deleteStory(id)
     return Reponse(data)
   }
 }

@@ -63,6 +63,7 @@ async function main() {
         seriesId: '0',
         createBy: '1',
         viewCount: 0,
+				isActive: true,
       },
 			{
         _id: '2',
@@ -75,6 +76,7 @@ async function main() {
         seriesId: '0',
         createBy: '1',
         viewCount: 0,
+				isActive: true,
       },
 			{
 				_id: '3',
@@ -111,6 +113,7 @@ async function main() {
         seriesId: '0',
         createBy: '1',
         viewCount: 0,
+				isActive: true,
 			}
     ];
 

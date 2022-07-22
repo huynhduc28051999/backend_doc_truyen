@@ -9,7 +9,10 @@ export class StoriesService {
   async getOwnStories(userId: string) {
     try {
       const stories = await getMongoRepository(StoriesEntity).find({
-        createBy: userId
+        where: {
+          createBy: userId,
+          isActive: { $ne: false }
+        }
       })
       return stories
     } catch (error) {
@@ -38,7 +41,7 @@ export class StoriesService {
   }
   async getAllStory() {
     try {
-      const stories = await getMongoRepository(StoriesEntity).find({ })
+      const stories = await getMongoRepository(StoriesEntity).find({ where: { isActive: { $ne: false } } })
       return stories
     } catch (error) {
       throw new HttpException(...AppError(error))
@@ -54,6 +57,7 @@ export class StoriesService {
       const query: any = {
         type: { $in: type.map(item => Number(item)) },
         status: { $in: status.map(item => Number(item)) },
+        isActive: { $ne: false }
       }
       if (search) {
         query.title = { $regex: search, $options: 'si' }
@@ -112,7 +116,12 @@ export class StoriesService {
   async detailStory(_id: string) {
     try {
       const [story]: any[] = await getMongoRepository(StoriesEntity).aggregate([
-        { $match: { _id } },
+        {
+          $match: {
+            _id,
+            isActive: { $ne: false }
+          }
+        },
         {
           $lookup: {
             from: 'User',
@@ -133,6 +142,7 @@ export class StoriesService {
             "illustrator": 1,
             "type": 1,
             "avatar": 1,
+            "group": 1,
             "genders": 1,
             "summary": 1,
             "extra": 1,
@@ -171,7 +181,8 @@ export class StoriesService {
       const otherStories = await getMongoRepository(StoriesEntity).find({
         where: {
           group: story.group,
-          _id: { $ne: _id }
+          _id: { $ne: _id },
+          isActive: { $ne: false }
         }
       })
 
@@ -180,5 +191,12 @@ export class StoriesService {
       throw new HttpException(...AppError(error))
     }
   }
-
+  async deleteStory(_id: string) {
+    try {
+      const story = await getMongoRepository(StoriesEntity).findOneAndUpdate({ _id }, { $set: { isActive: false } })
+      return story.ok
+    } catch (error) {
+      throw new HttpException(...AppError(error))
+    }
+  }
 }

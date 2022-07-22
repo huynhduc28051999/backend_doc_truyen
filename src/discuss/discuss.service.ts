@@ -7,7 +7,7 @@ import { AppError } from 'common/error/AppError'
 export class DiscussService {
   async getDiscussById(_id: string) {
     try {
-      const disscuss = await getMongoRepository(DiscussEntity).findOne({ _id })
+      const disscuss = await getMongoRepository(DiscussEntity).findOne({ where: { _id, isActive: { $ne: false } } })
       if (!disscuss) {
         throw new HttpException('Disscuss does not exist', HttpStatus.NOT_FOUND)
       }
@@ -23,7 +23,7 @@ export class DiscussService {
 
   async getOwnDiscuss(userId: string) {
     try {
-      const disscuss = await getMongoRepository(DiscussEntity).find({ createBy: userId })
+      const disscuss = await getMongoRepository(DiscussEntity).find({ where: { createBy: userId, isActive: { $ne: false } } })
       return disscuss;
     } catch (error) {
       throw new HttpException(...AppError(error))
@@ -32,7 +32,9 @@ export class DiscussService {
 
   async getAllDiscuss(filter: any) {
     try {
-      const query: any = {}
+      const query: any = {
+        isActive: { $ne: false }
+      }
       if (filter.category === 'all' || !filter.category) {
         query.category = { $in: [1,2,3,4,5]}
       } else {
@@ -90,7 +92,16 @@ export class DiscussService {
 
   async getDiscussByStory(storyId: string) {
     try {
-      const disscuss = await getMongoRepository(DiscussEntity).find({ seriesId: storyId })
+      const disscuss = await getMongoRepository(DiscussEntity).find({ where: { seriesId: storyId, isActive: { $ne: false } } })
+      return disscuss;
+    } catch (error) {
+      throw new HttpException(...AppError(error))
+    }
+  }
+
+  async deleteDiscuss(_id: string) {
+    try {
+      const disscuss = await getMongoRepository(DiscussEntity).findOneAndUpdate({ _id }, { $set: { isActive: false } })
       return disscuss;
     } catch (error) {
       throw new HttpException(...AppError(error))

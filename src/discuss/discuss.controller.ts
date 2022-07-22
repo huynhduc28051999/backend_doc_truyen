@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Query } from '@nestjs/common'
+import { Controller, Get, Post, Body, UseGuards, Query, Delete } from '@nestjs/common'
 import { DiscussService } from './discuss.service'
 import { AuthGuard, Reponse, User } from '@common'
 
@@ -35,6 +35,11 @@ export class DiscussController {
   @Get('byStory')
   async getDiscussByStory(@Query('storyId') storyId) {
     const data = await this.discussService.getDiscussByStory(storyId)
+    return Reponse(data)
+  }
+  @Delete()
+  async deleteDiscuss(@Query('id') id) {
+    const data = await this.discussService.deleteDiscuss(id)
     return Reponse(data)
   }
 }

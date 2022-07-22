@@ -31,6 +31,10 @@ export class DiscussEntity {
 
 	@Expose()
 	@Column()
+	isActive: boolean
+
+	@Expose()
+	@Column()
 	createdAt: number
 
 	@Expose()
@@ -52,6 +56,7 @@ export class DiscussEntity {
 			this._id = uuid.v4()
 			this.createdAt = this.createdAt || moment().valueOf()
 			this.viewCount = 0;
+			this.isActive = true;
 			this.updatedAt = moment().valueOf()
 		}
 	}
