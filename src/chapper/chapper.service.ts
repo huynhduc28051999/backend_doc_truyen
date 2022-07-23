@@ -18,12 +18,12 @@ export class ChapperService {
       await this.storiesService.viewStory(chapper.storyId);
       const [next, pre] = await Promise.all([
         await getMongoRepository(ChapperEntity).findOne({ where: { createdAt: { $gt: chapper.createdAt } } }),
-        await getMongoRepository(ChapperEntity).findOne({ where: { createdAt: { $lt: chapper.createdAt } } })
+        await getMongoRepository(ChapperEntity).find({ where: { createdAt: { $lt: chapper.createdAt } }, order: { createdAt: 'DESC' }, take: 1 })
       ])
       const story = await getMongoRepository(StoriesEntity).findOne({ _id: chapper.storyId })
       chapper.story = story;
       chapper.nextChap = next?._id;
-      chapper.preChap = pre?._id;
+      chapper.preChap = pre?.[0]?._id;
       return chapper
     } catch (error) {
       throw new HttpException(...AppError(error))
@@ -36,7 +36,7 @@ export class ChapperService {
         throw new HttpException('Story does not exist', HttpStatus.NOT_FOUND)
       }
       story.updatedAt = moment().valueOf();
-      await getMongoRepository(ChapperEntity).save(story)
+      await getMongoRepository(StoriesEntity).save(story)
       const newChapper = new ChapperEntity({...input, createBy: userId });
       const chapper = await getMongoRepository(ChapperEntity).save(newChapper)
       return chapper

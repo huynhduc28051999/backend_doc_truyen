@@ -79,8 +79,9 @@ export class StoriesService {
         skip
       })
 
-      for (const item of stories) {
-        (item as any).chapper = await getMongoRepository(ChapperEntity).findOne({ storyId: item._id })
+      for (const item of (stories as any)) {
+        const chapperStory = await getMongoRepository(ChapperEntity).find({ where: { storyId: item._id }, order: { createdAt: 'DESC' }, take: 1 })
+        item.chapper = chapperStory?.[0];
       }
 
       const total = await getMongoRepository(StoriesEntity).count(query);
